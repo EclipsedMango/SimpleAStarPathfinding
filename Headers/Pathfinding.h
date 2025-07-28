@@ -23,8 +23,10 @@ namespace AIForGames {
 
         void ConnectTo(Node *other, float cost);
 
-        Node* previous = {};
+        Node* parent = {};
         float score = 0;
+        float hScore = 0;
+        float fScore = 0;
     };
 }
 #endif //PATHFINDING_H

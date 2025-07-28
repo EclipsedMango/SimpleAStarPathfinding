@@ -3,7 +3,7 @@
 #include "../Headers/NodeMap.h"
 
 void PathAgent::GoToNode(AIForGames::Node *node) {
-    m_path = NodeMap::DijkstrasSearch(m_currentNode, node);
+    m_path = NodeMap::AStarSearch(m_currentNode, node);
     m_currentIndex = 0;
 }
 

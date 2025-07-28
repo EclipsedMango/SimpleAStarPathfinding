@@ -21,7 +21,7 @@ public:
     void Initialise(std::vector<std::string> &asciiMap, int cellSize);
     void Draw() const;
 
-    static std::vector<AIForGames::Node*> DijkstrasSearch(AIForGames::Node* startNode, AIForGames::Node* endNode);
+    static std::vector<AIForGames::Node*> AStarSearch(AIForGames::Node* startNode, AIForGames::Node* endNode);
 
     [[nodiscard]] AIForGames::Node* GetClosestNode(glm::vec2 worldPos) const;
     [[nodiscard]] AIForGames::Node* GetNode(const int x, const int y) const { return m_nodes[x + m_width * y]; }

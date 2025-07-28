@@ -63,7 +63,13 @@ void NodeMap::Initialise(std::vector<std::string>& asciiMap, const int cellSize)
     }
 }
 
-std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
+float CalculateHeuristic(const Node* a, const Node* b) {
+    const float dx = a->position.x - b->position.x;
+    const float dy = a->position.y - b->position.y;
+    return std::sqrt(dx * dx + dy * dy);
+}
+
+std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
     if (startNode == nullptr || endNode == nullptr) {
         throw std::invalid_argument("Start or End node is null.");
     }
@@ -73,7 +79,7 @@ std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
     }
 
     startNode->score = 0;
-    startNode->previous = nullptr;
+    startNode->parent = nullptr;
 
     std::vector<Node*> open = {};
 
@@ -83,7 +89,7 @@ std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
     open.push_back(startNode);
 
     while (!open.empty()) {
-        std::sort(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->score < b->score; });
+        std::sort(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->fScore < b->fScore; });
 
         Node* currentNode = open.front();
 
@@ -97,18 +103,23 @@ std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
 
         for (Edge c : currentNode->connections) {
             if (!closed.contains(c.target)) {
-                float scr = currentNode->score + c.cost;
+                const float gScr = currentNode->score + c.cost;
+                const float hScr = CalculateHeuristic(c.target, endNode);
+                const float fScr = gScr + hScr;
 
                 // Haven't visited node.
                 if (std::ranges::find(open, c.target) == open.end()) {
-                    c.target->score = scr;
-                    c.target->previous = currentNode;
+                    c.target->score = gScr;
+                    c.target->hScore = hScr;
+                    c.target->fScore = fScr;
+                    c.target->parent = currentNode;
                     open.push_back(c.target);
 
                     // Have visited node.
-                } else if (scr < c.target->score) {
-                    c.target->score = scr;
-                    c.target->previous = currentNode;
+                } else if (fScr < c.target->fScore) {
+                    c.target->score = gScr;
+                    c.target->fScore = fScr;
+                    c.target->parent = currentNode;
                 }
             }
         }
@@ -119,17 +130,17 @@ std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
 
     while (currentNode != nullptr) {
         path.insert(path.begin(), currentNode);
-        currentNode = currentNode->previous;
+        currentNode = currentNode->parent;
     }
 
     return path;
 }
 
 Node* NodeMap::GetClosestNode(const glm::vec2 worldPos) const {
-    int i = static_cast<int>(worldPos.x / m_cellSize);
+    int i = static_cast<int>(worldPos.x);
     if (i < 0 || i >= m_width) return nullptr;
 
-    int j = static_cast<int>(worldPos.y / m_cellSize);
+    int j = static_cast<int>(worldPos.y);
     if (j < 0 || j >= m_height) return nullptr;
 
     return GetNode(i, j);
