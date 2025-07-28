@@ -64,9 +64,9 @@ void NodeMap::Initialise(std::vector<std::string>& asciiMap, const int cellSize)
 }
 
 float CalculateHeuristic(const Node* a, const Node* b) {
-    const float dx = a->position.x - b->position.x;
-    const float dy = a->position.y - b->position.y;
-    return std::sqrt(dx * dx + dy * dy);
+    const float dx = abs(a->position.x - b->position.x);
+    const float dy = abs(a->position.y - b->position.y);
+    return dx + dy;
 }
 
 std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
@@ -132,6 +132,13 @@ std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
         path.insert(path.begin(), currentNode);
         currentNode = currentNode->parent;
     }
+
+    float totalCost = 0;
+    for (const Node* node: path) {
+        totalCost += node->fScore;
+    }
+
+    std::cout << totalCost << std::endl;
 
     return path;
 }
