@@ -16,7 +16,7 @@ private:
     int m_currentIndex = 0;
     AIForGames::Node* m_currentNode = {};
 
-    float m_speed = 0;
+    float m_speed = 128 * 5;
 
 public:
     void Update(float deltaTime);

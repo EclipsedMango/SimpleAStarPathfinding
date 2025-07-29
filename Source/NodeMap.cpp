@@ -153,6 +153,21 @@ Node* NodeMap::GetClosestNode(const glm::vec2 worldPos) const {
     return GetNode(i, j);
 }
 
+Node* NodeMap::GetRandomNode() const {
+    Node* node = nullptr;
+    while (node == nullptr) {
+        const int x = rand() % m_width;
+        const int y = rand() % m_height;
+        node = GetNode(x, y);
+    }
+    return node;
+}
+
+float NodeMap::GetCellSize() const {
+    return m_cellSize;
+}
+
+
 void NodeMap::Draw() const {
     constexpr auto cellColor = Color(43, 43, 43, 255);
     constexpr auto lineColor = Color(175, 175, 175, 255);

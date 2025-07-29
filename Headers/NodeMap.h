@@ -25,6 +25,8 @@ public:
 
     [[nodiscard]] AIForGames::Node* GetClosestNode(glm::vec2 worldPos) const;
     [[nodiscard]] AIForGames::Node* GetNode(const int x, const int y) const { return m_nodes[x + m_width * y]; }
+    [[nodiscard]] AIForGames::Node* GetRandomNode() const;
+    [[nodiscard]] float GetCellSize() const;
 };
 
 #endif //NODEMAP_H

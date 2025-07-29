@@ -31,6 +31,13 @@ add_executable(SimplePathFinding main.cpp
         Headers/NodeMap.h
         Source/NodeMap.cpp
         Headers/PathAgent.h
-        Source/PathAgent.cpp)
+        Source/PathAgent.cpp
+        Headers/Agent.h
+        Headers/Behaviour.h
+        Source/Agent.cpp
+        Headers/GotoPointBehaviour.h
+        Source/GotoPointBehaviour.cpp
+        Headers/WanderBehaviour.h
+        Source/WanderBehaviour.cpp)
 
 target_link_libraries(SimplePathFinding PRIVATE raylib glm::glm)
