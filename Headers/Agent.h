@@ -16,6 +16,10 @@ public:
     void GoTo(glm::vec2 point);
     void SetNode(AIForGames::Node* node);
 
+    void SwitchAlgorithm(AIForGames::Algorithm algo);
+
+    [[nodiscard]] int GetCurrentIndex() const;
+    [[nodiscard]] AIForGames::Algorithm GetAlgorithm() const;
     [[nodiscard]] bool PathComplete() const;
     [[nodiscard]] NodeMap* GetNodeMap() const;
 

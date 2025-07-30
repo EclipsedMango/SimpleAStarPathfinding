@@ -39,6 +39,7 @@ int main() {
 
     auto *nodeMap = new NodeMap;
     nodeMap->Initialise(asciiMap, 50);
+    nodeMap->SetMapImage(mapImage);
 
     Node* start = nodeMap->GetNode(1, 1);
     Node* end = nodeMap->GetNode(1, 1);
@@ -53,10 +54,24 @@ int main() {
 
     auto time = static_cast<float>(GetTime());
 
+    bool switchedAlgo = false;
+
     while (!WindowShouldClose()) {
         const auto fTime = static_cast<float>(GetTime());
         const float deltaTime = fTime - time;
         time = fTime;
+
+        if (IsKeyPressed(KEY_S)) {
+            switchedAlgo = !switchedAlgo;
+
+            if (switchedAlgo) {
+                agent.SwitchAlgorithm(DIJKSTRA);
+                agent2.SwitchAlgorithm(DIJKSTRA);
+            } else {
+                agent.SwitchAlgorithm(ASTAR);
+                agent2.SwitchAlgorithm(ASTAR);
+            }
+        }
 
         BeginDrawing();
         ClearBackground(Color(62, 65, 66));
@@ -68,6 +83,14 @@ int main() {
 
         agent2.Update(deltaTime);
         agent2.Draw();
+
+        DrawText("Press S to switch Algorithm", 25, 15, 25, LIME);
+        if (agent.GetAlgorithm() == DIJKSTRA) {
+            DrawText("Current Algorithm: DIJKSTRA", 400, 15, 25, BLUE);
+        } else {
+            DrawText("Current Algorithm: ASTAR", 400, 15, 25, BLUE);
+        }
+        
 
         EndDrawing();
     }

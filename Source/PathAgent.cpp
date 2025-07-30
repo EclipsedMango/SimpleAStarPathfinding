@@ -3,7 +3,12 @@
 #include "../Headers/NodeMap.h"
 
 void PathAgent::GoToNode(AIForGames::Node *node) {
-    m_path = NodeMap::AStarSearch(m_currentNode, node);
+    if (m_algo == AIForGames::DIJKSTRA) {
+        m_path = NodeMap::DijkstrasSearch(m_currentNode, node);
+    } else {
+        m_path = NodeMap::AStarSearch(m_currentNode, node);
+    }
+    
     m_currentIndex = 0;
 }
 
@@ -48,6 +53,18 @@ void PathAgent::SetNode(AIForGames::Node *node) {
 
 void PathAgent::SetSpeed(const float value) {
     m_speed = value;
+}
+
+void PathAgent::SetAlgorithm(AIForGames::Algorithm algo) {
+    m_algo = algo;
+}
+
+AIForGames::Algorithm PathAgent::GetAlgorithm() const {
+    return m_algo;
+}
+
+int PathAgent::GetCurrentIndex() const {
+    return m_currentIndex;
 }
 
 glm::vec2 PathAgent::GetPosition() const {

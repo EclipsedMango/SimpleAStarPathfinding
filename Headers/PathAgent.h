@@ -18,13 +18,18 @@ private:
 
     float m_speed = 128 * 5;
 
+    AIForGames::Algorithm m_algo = AIForGames::ASTAR;
+
 public:
     void Update(float deltaTime);
 
     void GoToNode(AIForGames::Node* node);
     void SetNode(AIForGames::Node* node);
     void SetSpeed(float value);
+    void SetAlgorithm(AIForGames::Algorithm algo);
 
+    [[nodiscard]] int GetCurrentIndex() const;
+    [[nodiscard]] AIForGames::Algorithm GetAlgorithm() const;
     [[nodiscard]] glm::vec2 GetPosition() const;
     [[nodiscard]] std::vector<AIForGames::Node*> GetPath() const;
 

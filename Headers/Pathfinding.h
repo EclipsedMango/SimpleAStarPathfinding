@@ -9,6 +9,12 @@
 namespace AIForGames {
     struct Node;
 
+    static enum Algorithm {
+        DIJKSTRA = 0,
+        ASTAR = 1
+    };
+
+
     struct Edge {
         Edge() { target = nullptr; cost = 0; }
         Edge(Node* _target, const float _cost) : target(_target), cost(_cost) {}

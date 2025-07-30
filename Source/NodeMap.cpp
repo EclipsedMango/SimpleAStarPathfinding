@@ -1,6 +1,7 @@
 #include "../Headers/NodeMap.h"
 
 #include <iostream>
+#include <algorithm>
 #include <raylib.h>
 #include <unordered_set>
 
@@ -51,13 +52,15 @@ void NodeMap::Initialise(std::vector<std::string>& asciiMap, const int cellSize)
             Node* nodeSouth = y == 0 ? nullptr : GetNode(x, y - 1);
 
             if (nodeWest) {
-                node->ConnectTo(nodeWest, 1); // TODO weights
-                nodeWest->ConnectTo(node, 1);
+                float dist = glm::distance(node->position, nodeWest->position);
+                node->ConnectTo(nodeWest, dist);
+                nodeWest->ConnectTo(node, dist);
             }
 
             if (nodeSouth) {
-                node->ConnectTo(nodeSouth, 1);
-                nodeSouth->ConnectTo(node, 1);
+                float dist = glm::distance(node->position, nodeSouth->position);
+                node->ConnectTo(nodeSouth, dist);
+                nodeSouth->ConnectTo(node, dist);
             }
         }
     }
@@ -82,8 +85,6 @@ std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
     startNode->parent = nullptr;
 
     std::vector<Node*> open = {};
-
-    // unordered_set for SPEED (not sure if it is faster)
     std::unordered_set<Node*> closed = {};
 
     open.push_back(startNode);
@@ -143,6 +144,74 @@ std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
     return path;
 }
 
+std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
+    if (startNode == nullptr || endNode == nullptr) {
+        throw std::invalid_argument("Start or End node is null.");
+    }
+
+    if (startNode == endNode) {
+        return {};
+    }
+
+    startNode->score = 0;
+    startNode->parent = nullptr;
+
+    std::vector<Node*> open = {};
+    std::unordered_set<Node*> closed = {};
+
+    open.push_back(startNode);
+
+    while (!open.empty()) {
+        std::sort(open.begin(), open.end(), [](const Node* a, const Node* b) { return a->score < b->score; });
+
+        Node* currentNode = open.front();
+
+        // Are we at the end?
+        if (currentNode == endNode) {
+            break;
+        }
+
+        open.erase(open.begin());
+        closed.insert(currentNode);
+
+        for (Edge c : currentNode->connections) {
+            if (!closed.contains(c.target)) {
+                const float gScr = currentNode->score + c.cost;
+              
+                // Haven't visited node.
+                if (std::ranges::find(open, c.target) == open.end()) {
+                    c.target->score = gScr;
+                    c.target->parent = currentNode;
+                    open.push_back(c.target);
+
+                    // Have visited node.
+                } else if (gScr < c.target->score) {
+                    c.target->score = gScr;
+                    c.target->parent = currentNode;
+                }
+            }
+        }
+    }
+
+    std::vector<Node*> path = {};
+    Node* currentNode = endNode;
+
+    while (currentNode != nullptr) {
+        path.insert(path.begin(), currentNode);
+        currentNode = currentNode->parent;
+    }
+
+    float totalCost = 0;
+    for (const Node* node: path) {
+        totalCost += node->score;
+    }
+
+    std::cout << totalCost << std::endl;
+
+    return path;
+}
+
+
 Node* NodeMap::GetClosestNode(const glm::vec2 worldPos) const {
     int i = static_cast<int>(worldPos.x);
     if (i < 0 || i >= m_width) return nullptr;
@@ -167,6 +236,14 @@ float NodeMap::GetCellSize() const {
     return m_cellSize;
 }
 
+Image NodeMap::GetMapImage() const {
+    return m_mapImage;
+}
+
+void NodeMap::SetMapImage(Image mapImage) {
+    m_mapImage = mapImage;
+}
+
 
 void NodeMap::Draw() const {
     constexpr auto cellColor = Color(43, 43, 43, 255);
@@ -181,8 +258,8 @@ void NodeMap::Draw() const {
                 DrawRectangle(
                     static_cast<int>(x * m_cellSize),
                     static_cast<int>(y * m_cellSize),
-                    static_cast<int>(m_cellSize) - 1,
-                    static_cast<int>(m_cellSize) - 1,
+                    static_cast<int>(m_cellSize),
+                    static_cast<int>(m_cellSize),
                     cellColor
                 );
             } else {

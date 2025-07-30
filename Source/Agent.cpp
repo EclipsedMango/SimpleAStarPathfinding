@@ -17,6 +17,18 @@ void Agent::GoTo(glm::vec2 point) {
     m_pathAgent.GoToNode(end);
 }
 
+void Agent::SwitchAlgorithm(AIForGames::Algorithm algo) {
+    m_pathAgent.SetAlgorithm(algo);
+}
+
+AIForGames::Algorithm Agent::GetAlgorithm() const {
+    return m_pathAgent.GetAlgorithm();
+}
+
+int Agent::GetCurrentIndex() const {
+    return m_pathAgent.GetCurrentIndex();
+}
+
 bool Agent::PathComplete() const {
     return m_pathAgent.GetPath().empty();
 }
@@ -32,10 +44,23 @@ void Agent::Draw() const {
 }
 
 void Agent::DrawPath(const PathAgent& agent) {
+    Color lineCol = Color(2, 168, 209, 255);
+
     const std::vector<AIForGames::Node*> path = agent.GetPath();
-    for (int i = 1; i < path.size(); ++i) {
+    for (int i = agent.GetCurrentIndex() + 1; i < path.size(); ++i) {
         const AIForGames::Node* node = path.at(i);
-        DrawLineEx({node->parent->position.x, node->parent->position.y}, {node->position.x, node->position.y}, 6.0f, RED);
+        if (node->parent == nullptr) {
+            continue;
+        }
+
+        DrawLineEx({node->parent->position.x, node->parent->position.y}, {node->position.x, node->position.y}, 6.0f, lineCol);
     }
+
+    if (agent.GetCurrentIndex() >= path.size()) {
+        return;
+    }
+
+    AIForGames::Node* currentNode = path[agent.GetCurrentIndex()];
+    DrawLineEx({agent.GetPosition().x, agent.GetPosition().y}, {currentNode->position.x, currentNode->position.y}, 6.0f, lineCol);
 }
 

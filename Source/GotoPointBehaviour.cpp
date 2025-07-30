@@ -7,10 +7,11 @@
 
 void GotoPointBehaviour::Update(Agent* agent, float deltaTime) {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        NodeMap* map = agent->GetNodeMap();
         glm::vec2 mousePos = {GetMousePosition().x / 50, GetMousePosition().y / 50};
-        agent->GoTo(glm::vec2(mousePos.x, mousePos.y));
 
-        // TODO: fix issue with clicking spots outside map.
-        // if (GetImageColor(mapImage, mousePos.x, mousePos.y).r > 127) {}
+        if (GetImageColor(map->GetMapImage(), mousePos.x, mousePos.y).r > 127) {
+            agent->GoTo(glm::vec2(mousePos.x, mousePos.y));
+        }
     }
 }
