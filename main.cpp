@@ -8,6 +8,8 @@
 #include "Headers/PathAgent.h"
 #include "Headers/Pathfinding.h"
 #include "Headers/WanderBehaviour.h"
+#include "Headers/FollowBehaviour.h"
+#include "Headers/SelectorBehaviour.h"
 
 using namespace AIForGames;
 
@@ -48,9 +50,17 @@ int main() {
 
     Agent agent(nodeMap, new GotoPointBehaviour());
     agent.SetNode(start);
+    agent.SetLineColour(Color(24, 204, 240, 255));
 
     Agent agent2(nodeMap, new WanderBehaviour());
     agent2.SetNode(nodeMap->GetRandomNode());
+    agent2.SetLineColour(Color(240, 157, 24, 255));
+
+    Agent agent3(nodeMap, new SelectorBehaviour(new FollowBehaviour(), new WanderBehaviour()));
+    agent3.SetNode(nodeMap->GetRandomNode());
+    agent3.SetTarget(&agent);
+    agent3.SetSpeed(128 * 2.5);
+    agent3.SetLineColour(Color(24, 240, 49, 255));
 
     auto time = static_cast<float>(GetTime());
 
@@ -67,9 +77,11 @@ int main() {
             if (switchedAlgo) {
                 agent.SwitchAlgorithm(DIJKSTRA);
                 agent2.SwitchAlgorithm(DIJKSTRA);
+                agent3.SwitchAlgorithm(DIJKSTRA);
             } else {
                 agent.SwitchAlgorithm(ASTAR);
                 agent2.SwitchAlgorithm(ASTAR);
+                agent3.SwitchAlgorithm(ASTAR);
             }
         }
 
@@ -84,13 +96,15 @@ int main() {
         agent2.Update(deltaTime);
         agent2.Draw();
 
+        agent3.Update(deltaTime);
+        agent3.Draw();
+
         DrawText("Press S to switch Algorithm", 25, 15, 25, LIME);
         if (agent.GetAlgorithm() == DIJKSTRA) {
             DrawText("Current Algorithm: DIJKSTRA", 400, 15, 25, BLUE);
         } else {
             DrawText("Current Algorithm: ASTAR", 400, 15, 25, BLUE);
         }
-        
 
         EndDrawing();
     }

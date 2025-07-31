@@ -8,8 +8,28 @@ void Agent::Update(float deltaTime) {
     m_pathAgent.Update(deltaTime);
 }
 
-void Agent::SetNode(AIForGames::Node *node) {
+void Agent::SetNode(AIForGames::Node *node){
     m_pathAgent.SetNode(node);
+}
+
+void Agent::SetTarget(Agent* agent) {
+    m_target = agent;
+}
+
+void Agent::SetPosition(glm::vec2 position) {
+    m_pathAgent.SetPosition(position);
+}
+
+void Agent::SetSpeed(float value) {
+    m_pathAgent.SetSpeed(value);
+}
+
+void Agent::SetColour(Color colour) {
+    m_color = colour;
+}
+
+void Agent::SetLineColour(Color colour) {
+    m_lineColour = colour;
 }
 
 void Agent::GoTo(glm::vec2 point) {
@@ -19,6 +39,18 @@ void Agent::GoTo(glm::vec2 point) {
 
 void Agent::SwitchAlgorithm(AIForGames::Algorithm algo) {
     m_pathAgent.SetAlgorithm(algo);
+}
+
+void Agent::Reset() {
+    m_pathAgent.Reset();
+}
+
+Agent* Agent::GetTarget() const {
+    return m_target;
+}
+
+glm::vec2 Agent::GetPosition() const {
+    return m_pathAgent.GetPosition();
 }
 
 AIForGames::Algorithm Agent::GetAlgorithm() const {
@@ -37,23 +69,21 @@ NodeMap *Agent::GetNodeMap() const {
     return m_nodeMap;
 }
 
-
 void Agent::Draw() const {
-    DrawPath(m_pathAgent);
+    DrawPath(m_pathAgent, m_lineColour);
     m_pathAgent.Draw(12, m_color);
 }
 
-void Agent::DrawPath(const PathAgent& agent) {
-    Color lineCol = Color(2, 168, 209, 255);
-
+void Agent::DrawPath(const PathAgent& agent, const Color lineCol) {
     const std::vector<AIForGames::Node*> path = agent.GetPath();
     for (int i = agent.GetCurrentIndex() + 1; i < path.size(); ++i) {
         const AIForGames::Node* node = path.at(i);
-        if (node->parent == nullptr) {
+        const AIForGames::Node* nextNode = path.at(i - 1);
+        if (nextNode == nullptr) {
             continue;
         }
 
-        DrawLineEx({node->parent->position.x, node->parent->position.y}, {node->position.x, node->position.y}, 6.0f, lineCol);
+        DrawLineEx({nextNode->position.x, nextNode->position.y}, {node->position.x, node->position.y}, 6.0f, lineCol);
     }
 
     if (agent.GetCurrentIndex() >= path.size()) {

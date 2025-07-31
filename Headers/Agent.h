@@ -14,10 +14,19 @@ public:
     ~Agent() { delete m_current; }
 
     void GoTo(glm::vec2 point);
-    void SetNode(AIForGames::Node* node);
 
     void SwitchAlgorithm(AIForGames::Algorithm algo);
+    void Reset();
 
+    void SetTarget(Agent* agent);
+    void SetSpeed(float value);
+    void SetPosition(glm::vec2 pos);
+    void SetColour(Color colour);
+    void SetLineColour(Color colour);
+    void SetNode(AIForGames::Node* node);
+
+    [[nodiscard]] Agent* GetTarget() const;
+    [[nodiscard]] glm::vec2 GetPosition() const;
     [[nodiscard]] int GetCurrentIndex() const;
     [[nodiscard]] AIForGames::Algorithm GetAlgorithm() const;
     [[nodiscard]] bool PathComplete() const;
@@ -27,12 +36,14 @@ public:
     void Draw() const;
 
 private:
-    static void DrawPath(const PathAgent& agent) ;
+    static void DrawPath(const PathAgent& agent, const Color lineCol);
 
+    Agent* m_target = {};
     PathAgent m_pathAgent = {};
     Behaviour* m_current = {};
     NodeMap* m_nodeMap = {};
     Color m_color = {};
+    Color m_lineColour = {};
 };
 
 #endif //AGENT_H

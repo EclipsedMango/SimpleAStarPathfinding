@@ -10,7 +10,7 @@
 
 class PathAgent {
 private:
-    glm::vec2 m_position = {};
+    glm::vec2 m_position = {1, 1};
 
     std::vector<AIForGames::Node*> m_path = {};
     int m_currentIndex = 0;
@@ -24,6 +24,9 @@ public:
     void Update(float deltaTime);
 
     void GoToNode(AIForGames::Node* node);
+    void Reset();
+
+    void SetPosition(glm::vec2 pos);
     void SetNode(AIForGames::Node* node);
     void SetSpeed(float value);
     void SetAlgorithm(AIForGames::Algorithm algo);

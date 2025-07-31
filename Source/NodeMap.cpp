@@ -74,7 +74,8 @@ float CalculateHeuristic(const Node* a, const Node* b) {
 
 std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
     if (startNode == nullptr || endNode == nullptr) {
-        throw std::invalid_argument("Start or End node is null.");
+        std::cout << "Start or End nodes are null." << std::endl;
+        return {};
     }
 
     if (startNode == endNode) {
@@ -133,13 +134,6 @@ std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
         path.insert(path.begin(), currentNode);
         currentNode = currentNode->parent;
     }
-
-    float totalCost = 0;
-    for (const Node* node: path) {
-        totalCost += node->fScore;
-    }
-
-    std::cout << totalCost << std::endl;
 
     return path;
 }
@@ -200,14 +194,7 @@ std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
         path.insert(path.begin(), currentNode);
         currentNode = currentNode->parent;
     }
-
-    float totalCost = 0;
-    for (const Node* node: path) {
-        totalCost += node->score;
-    }
-
-    std::cout << totalCost << std::endl;
-
+   
     return path;
 }
 

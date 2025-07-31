@@ -51,12 +51,20 @@ void PathAgent::SetNode(AIForGames::Node *node) {
     m_position = node->position;
 }
 
+void PathAgent::SetPosition(glm::vec2 pos) {
+    m_position = pos;
+}
+
 void PathAgent::SetSpeed(const float value) {
     m_speed = value;
 }
 
 void PathAgent::SetAlgorithm(AIForGames::Algorithm algo) {
     m_algo = algo;
+}
+
+void PathAgent::Reset() {
+    m_path.clear();
 }
 
 AIForGames::Algorithm PathAgent::GetAlgorithm() const {
