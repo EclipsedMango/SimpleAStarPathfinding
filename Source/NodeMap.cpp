@@ -135,6 +135,10 @@ std::vector<Node*> NodeMap::AStarSearch(Node *startNode, Node *endNode) {
         currentNode = currentNode->parent;
     }
 
+    if (path.front() == endNode) {
+        return {};
+    }
+
     return path;
 }
 
@@ -193,6 +197,10 @@ std::vector<Node*> NodeMap::DijkstrasSearch(Node *startNode, Node *endNode) {
     while (currentNode != nullptr) {
         path.insert(path.begin(), currentNode);
         currentNode = currentNode->parent;
+    }
+
+    if (path.front() == endNode) {
+        return {};
     }
    
     return path;

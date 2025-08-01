@@ -91,6 +91,8 @@ void Agent::DrawPath(const PathAgent& agent, const Color lineCol) {
     }
 
     AIForGames::Node* currentNode = path[agent.GetCurrentIndex()];
+    AIForGames::Node* endNode = path.back();
     DrawLineEx({agent.GetPosition().x, agent.GetPosition().y}, {currentNode->position.x, currentNode->position.y}, 6.0f, lineCol);
+    DrawCircleV({endNode->position.x, endNode->position.y}, 8.0f, lineCol);
 }
 

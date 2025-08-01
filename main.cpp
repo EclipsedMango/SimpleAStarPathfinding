@@ -13,15 +13,13 @@
 
 using namespace AIForGames;
 
-void DrawPath(const PathAgent& agent);
-
 int main() {
     constexpr int screenWidth = 1200;
     constexpr int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "AI For Games");
 
-    const Image mapImage = LoadImage("GrayscaleMaze.png");
+    const Image mapImage = LoadImage("GrayscaleMaze2.png");
 
     std::vector<std::string> asciiMap;
 

@@ -1,15 +1,19 @@
 #include "../Headers/PathAgent.h"
-
 #include "../Headers/NodeMap.h"
 
 void PathAgent::GoToNode(AIForGames::Node *node) {
+    std::vector<AIForGames::Node*> newPath;
+
     if (m_algo == AIForGames::DIJKSTRA) {
-        m_path = NodeMap::DijkstrasSearch(m_currentNode, node);
+        newPath = NodeMap::DijkstrasSearch(m_currentNode, node);
     } else {
-        m_path = NodeMap::AStarSearch(m_currentNode, node);
+        newPath = NodeMap::AStarSearch(m_currentNode, node);
     }
-    
-    m_currentIndex = 0;
+
+    if (!newPath.empty()) {
+        m_path = newPath;
+        m_currentIndex = 0;
+    }    
 }
 
 void PathAgent::Update(const float deltaTime) {
@@ -17,33 +21,35 @@ void PathAgent::Update(const float deltaTime) {
         return;
     }
 
-    glm::vec2 dir = m_currentNode->position - m_position;
+    glm::vec2 dir = m_path.at(m_currentIndex)->position - m_position;
     const float dist = glm::length(dir);
 
     float step = m_speed * deltaTime;
 
     if (step < dist) {
         m_position += step * normalize(dir);
-    } else {
-        AIForGames::Node* passedNode = m_currentNode;
-
-        m_currentIndex += 1;
-        if (m_currentIndex == m_path.size()) {
-            m_position = passedNode->position;
-            m_path.clear();
-            m_currentIndex = 0;
-        } else {
-            m_currentNode = m_path.at(m_currentIndex);
-
-            glm::vec2 newDir = (m_currentNode->position - passedNode->position);
-
-            if (glm::length(newDir) > 0) {
-                newDir = normalize(newDir);
-            }
-
-            m_position = passedNode->position + (step - dist) * newDir;
-        }
+        return;
     }
+
+	AIForGames::Node* passedNode = m_path.at(m_currentIndex);
+
+	m_currentIndex += 1;
+	if (m_currentIndex == m_path.size()) {
+		m_position = passedNode->position;
+		m_path.clear();
+		m_currentIndex = 0;
+        return;
+	}
+
+    m_currentNode = m_path.at(m_currentIndex);
+
+	glm::vec2 newDir = (m_path.at(m_currentIndex)->position - passedNode->position);
+
+	if (glm::length(newDir) > 0) {
+		newDir = normalize(newDir);
+	}
+
+	m_position = passedNode->position + (step - dist) * newDir;
 }
 
 void PathAgent::SetNode(AIForGames::Node *node) {
@@ -60,6 +66,7 @@ void PathAgent::SetSpeed(const float value) {
 }
 
 void PathAgent::SetAlgorithm(AIForGames::Algorithm algo) {
+    this->Reset();
     m_algo = algo;
 }
 
