@@ -8,7 +8,7 @@
 class SelectorBehaviour final : public Behaviour {
 public:
     SelectorBehaviour(Behaviour* b1, Behaviour* b2) : m_b1(b1), m_b2(b2) {}
-    ~SelectorBehaviour();
+    ~SelectorBehaviour() override;
 
     void Update(Agent* agent, float deltaTime) override;
 
@@ -16,7 +16,7 @@ public:
 private:
     Behaviour* m_b1;
     Behaviour* m_b2;
-    Behaviour* m_selected;
+    Behaviour* m_selected = {};
 };
 
 #endif //SELECTORBEHAVIOUR_H

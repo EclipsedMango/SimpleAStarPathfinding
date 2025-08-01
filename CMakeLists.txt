@@ -18,7 +18,7 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     )
     FetchContent_GetProperties(raylib)
     if (NOT raylib_POPULATED) # Have we downloaded raylib yet?
-        set(FETCHCONTENT_QUIET NO)
+        set(FETCH CONTENT_QUIET NO)
         FetchContent_Populate(raylib)
         set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
         add_subdirectory(${raylib_SOURCE_DIR} ${raylib_BINARY_DIR})
@@ -38,6 +38,11 @@ add_executable(SimplePathFinding main.cpp
         Headers/GotoPointBehaviour.h
         Source/GotoPointBehaviour.cpp
         Headers/WanderBehaviour.h
-        Source/WanderBehaviour.cpp)
+        Source/WanderBehaviour.cpp
+        Headers/FollowBehaviour.h
+        Source/FollowBehaviour.cpp
+        Headers/SelectorBehaviour.h
+        Source/SelectorBehaviour.cpp
+)
 
 target_link_libraries(SimplePathFinding PRIVATE raylib glm::glm)

@@ -9,11 +9,10 @@
 namespace AIForGames {
     struct Node;
 
-    static enum Algorithm {
+    enum Algorithm {
         DIJKSTRA = 0,
         ASTAR = 1
     };
-
 
     struct Edge {
         Edge() { target = nullptr; cost = 0; }

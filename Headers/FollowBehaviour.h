@@ -10,7 +10,7 @@ class FollowBehaviour final : public Behaviour {
 public:
     void Update(Agent* agent, float deltaTime) override;
 private:
-    glm::vec2 lastTargetPosition;
+    glm::vec2 lastTargetPosition = {};
 };
 
 #endif //FOLLOWBEHAVIOUR_H
