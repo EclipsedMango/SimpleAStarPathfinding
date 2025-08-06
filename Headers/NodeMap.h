@@ -12,8 +12,6 @@
 #include "Pathfinding.h"
 
 class NodeMap {
-    ~NodeMap();
-
     int m_width = 0, m_height = 0;
     float m_cellSize = 0;
 
@@ -22,6 +20,8 @@ class NodeMap {
     AIForGames::Node** m_nodes = {};
 
 public:
+    ~NodeMap();
+
     void Initialise(std::vector<std::string> &asciiMap, int cellSize);
     void Draw() const;
 

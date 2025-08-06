@@ -9,7 +9,9 @@
 #include "Headers/Pathfinding.h"
 #include "Headers/WanderBehaviour.h"
 #include "Headers/FollowBehaviour.h"
-#include "Headers/SelectorBehaviour.h"
+#include "Headers/DistanceCondition.h"
+#include "Headers/StateMachine.h"
+#include "Headers/State.h"
 
 using namespace AIForGames;
 
@@ -19,7 +21,7 @@ int main() {
 
     InitWindow(screenWidth, screenHeight, "AI For Games");
 
-    const Image mapImage = LoadImage("GrayscaleMaze2.png");
+    const Image mapImage = LoadImage("GrayscaleMaze.png");
 
     std::vector<std::string> asciiMap;
 
@@ -38,8 +40,8 @@ int main() {
     }
 
     auto *nodeMap = new NodeMap;
-    nodeMap->Initialise(asciiMap, 50);
     nodeMap->SetMapImage(mapImage);
+    nodeMap->Initialise(asciiMap, 50);
 
     Node* start = nodeMap->GetNode(1, 1);
     Node* end = nodeMap->GetNode(1, 1);
@@ -54,7 +56,20 @@ int main() {
     agent2.SetNode(nodeMap->GetRandomNode());
     agent2.SetLineColour(Color(240, 157, 24, 255));
 
-    Agent agent3(nodeMap, new SelectorBehaviour(new FollowBehaviour(), new WanderBehaviour()));
+    DistanceCondition* closerThan5 = new DistanceCondition(5.0f * nodeMap->GetCellSize(), true);
+    DistanceCondition* furtherThan7 = new DistanceCondition(7.0f * nodeMap->GetCellSize(), false);
+
+    State* wanderState = new State(new WanderBehaviour());
+    State* followState = new State(new FollowBehaviour());
+
+    wanderState->AddTransition(closerThan5, followState);
+    followState->AddTransition(furtherThan7, wanderState);
+
+    StateMachine* sm = new StateMachine(wanderState);
+    sm->AddState(wanderState);
+    sm->AddState(followState);
+
+    Agent agent3(nodeMap, sm);
     agent3.SetNode(nodeMap->GetRandomNode());
     agent3.SetTarget(&agent);
     agent3.SetSpeed(128 * 2.5);
@@ -106,6 +121,9 @@ int main() {
 
         EndDrawing();
     }
+
+    delete nodeMap;
+    UnloadImage(mapImage);
 
     CloseWindow();
     return 0;

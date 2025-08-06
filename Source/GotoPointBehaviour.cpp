@@ -5,6 +5,16 @@
 #include "../Headers/Agent.h"
 #include "glm/vec2.hpp"
 
+void GotoPointBehaviour::Enter(Agent* agent) {
+    agent->SetColour(WHITE);
+    agent->Reset();
+}
+
+void GotoPointBehaviour::Exit(Agent* agent) {
+    agent->SetColour(WHITE);
+    agent->Reset();
+}
+
 void GotoPointBehaviour::Update(Agent* agent, float deltaTime) {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         NodeMap* map = agent->GetNodeMap();

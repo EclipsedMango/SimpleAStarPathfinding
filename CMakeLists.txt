@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 3.29)
 project(SimplePathFinding)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -25,24 +25,18 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     endif()
 endif()
 
-add_executable(SimplePathFinding main.cpp
-        Headers/Pathfinding.h
-        Source/Pathfinding.cpp
-        Headers/NodeMap.h
-        Source/NodeMap.cpp
-        Headers/PathAgent.h
-        Source/PathAgent.cpp
-        Headers/Agent.h
-        Headers/Behaviour.h
-        Source/Agent.cpp
-        Headers/GotoPointBehaviour.h
-        Source/GotoPointBehaviour.cpp
-        Headers/WanderBehaviour.h
-        Source/WanderBehaviour.cpp
-        Headers/FollowBehaviour.h
-        Source/FollowBehaviour.cpp
-        Headers/SelectorBehaviour.h
-        Source/SelectorBehaviour.cpp
+file(
+    COPY 
+    "${CMAKE_CURRENT_SOURCE_DIR}/GrayscaleMaze.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/GrayscaleMaze2.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/GrayscaleMaze3.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/image.png"
+    DESTINATION
+    "${CMAKE_CURRENT_BINARY_DIR}"
 )
+
+file(GLOB_RECURSE MY_SOURCES "Source/*.cpp" "Headers/*.h")
+
+add_executable(SimplePathFinding main.cpp ${MY_SOURCES})
 
 target_link_libraries(SimplePathFinding PRIVATE raylib glm::glm)

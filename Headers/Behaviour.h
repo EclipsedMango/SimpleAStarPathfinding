@@ -9,7 +9,9 @@ class Behaviour {
 public:
     virtual ~Behaviour() = default;
 
+    virtual void Enter(Agent* agent) {};
     virtual void Update(Agent* agent, float deltaTime) = 0;
+    virtual void Exit(Agent* agent) {};
 };
 
 #endif //BEHAVIOUR_H

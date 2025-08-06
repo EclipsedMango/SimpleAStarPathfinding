@@ -1,6 +1,7 @@
 #include "../Headers/NodeMap.h"
 
 #include <iostream>
+#include <vector>
 #include <algorithm>
 #include <raylib.h>
 #include <unordered_set>
@@ -238,7 +239,6 @@ Image NodeMap::GetMapImage() const {
 void NodeMap::SetMapImage(Image mapImage) {
     m_mapImage = mapImage;
 }
-
 
 void NodeMap::Draw() const {
     constexpr auto cellColor = Color(43, 43, 43, 255);
