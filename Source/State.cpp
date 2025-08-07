@@ -1,17 +1,13 @@
 #include "../Headers/State.h"
 
-State::State(Behaviour* b) {
-	m_behaviours.push_back(b);
-}
-
 State::~State() {
 	for (Behaviour* b : m_behaviours) {
 		delete b;
 	}
+}
 
-	for (Transition t : m_transitions) {
-		delete t.condition;
-	}
+State::State(Behaviour* b) {
+	m_behaviours.push_back(b);
 }
 
 void State::AddTransition(Condition* c, State* s) {

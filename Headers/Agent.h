@@ -11,7 +11,7 @@ class Agent {
 public:
     Agent() = default;
     Agent(NodeMap* _nodeMap, Behaviour* _behaviour);
-    ~Agent() { delete m_current; }
+    ~Agent();
 
     void GoTo(glm::vec2 point);
 
@@ -24,6 +24,7 @@ public:
     void SetColour(Color colour);
     void SetLineColour(Color colour);
     void SetNode(AIForGames::Node* node);
+    void SetNodeMap(NodeMap* _nodeMap);
 
     [[nodiscard]] Agent* GetTarget() const;
     [[nodiscard]] glm::vec2 GetPosition() const;

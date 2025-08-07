@@ -4,6 +4,10 @@ Agent::Agent(NodeMap* _nodeMap, Behaviour* _behaviour) : m_current(_behaviour), 
     m_current->Enter(this);
 }
 
+Agent::~Agent() {
+    delete m_current;
+}
+
 void Agent::Update(float deltaTime) {
     if (m_current) {
         m_current->Update(this, deltaTime);
@@ -14,6 +18,10 @@ void Agent::Update(float deltaTime) {
 
 void Agent::SetNode(AIForGames::Node *node){
     m_pathAgent.SetNode(node);
+}
+
+void Agent::SetNodeMap(NodeMap* _nodeMap) {
+    m_nodeMap = _nodeMap;
 }
 
 void Agent::SetTarget(Agent* agent) {

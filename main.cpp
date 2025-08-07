@@ -9,35 +9,26 @@
 #include "Headers/Pathfinding.h"
 #include "Headers/WanderBehaviour.h"
 #include "Headers/FollowBehaviour.h"
+#include "Headers/DefendBehaviour.h"
 #include "Headers/DistanceCondition.h"
+#include "Headers/DefendCondition.h"
 #include "Headers/StateMachine.h"
 #include "Headers/State.h"
 
 using namespace AIForGames;
 
+std::vector<std::string> GenerateMap(Image image);
+
 int main() {
     constexpr int screenWidth = 1200;
     constexpr int screenHeight = 800;
 
+    srand(time(nullptr));
+
     InitWindow(screenWidth, screenHeight, "AI For Games");
 
-    const Image mapImage = LoadImage("GrayscaleMaze.png");
-
-    std::vector<std::string> asciiMap;
-
-    for (int y = 0; y < mapImage.height; ++y) {
-        std::string line;
-
-        for (int x = 0; x < mapImage.width; ++x) {
-            if (GetImageColor(mapImage, x, y).r > 127) {
-                line.append("1");
-            } else {
-                line.append("0");
-            }
-        }
-
-        asciiMap.push_back(line);
-    }
+    Image mapImage = LoadImage("GrayscaleMaze.png");
+    std::vector<std::string> asciiMap = GenerateMap(mapImage);
 
     auto *nodeMap = new NodeMap;
     nodeMap->SetMapImage(mapImage);
@@ -56,18 +47,30 @@ int main() {
     agent2.SetNode(nodeMap->GetRandomNode());
     agent2.SetLineColour(Color(240, 157, 24, 255));
 
+    Node* agentBaseNode = nodeMap->GetRandomNode();
+
     DistanceCondition* closerThan5 = new DistanceCondition(5.0f * nodeMap->GetCellSize(), true);
     DistanceCondition* furtherThan7 = new DistanceCondition(7.0f * nodeMap->GetCellSize(), false);
 
+    DefendCondition* withinRange = new DefendCondition(agentBaseNode->position, 5 * nodeMap->GetCellSize(), true);
+    DefendCondition* notWithinRange = new DefendCondition(agentBaseNode->position, 5 * nodeMap->GetCellSize(), false);
+
     State* wanderState = new State(new WanderBehaviour());
     State* followState = new State(new FollowBehaviour());
+    State* defendState = new State(new DefendBehaviour());
 
     wanderState->AddTransition(closerThan5, followState);
+    wanderState->AddTransition(withinRange, defendState);
+
     followState->AddTransition(furtherThan7, wanderState);
+    followState->AddTransition(withinRange, defendState);
+
+    defendState->AddTransition(notWithinRange, wanderState);
 
     StateMachine* sm = new StateMachine(wanderState);
     sm->AddState(wanderState);
     sm->AddState(followState);
+    sm->AddState(defendState);
 
     Agent agent3(nodeMap, sm);
     agent3.SetNode(nodeMap->GetRandomNode());
@@ -112,6 +115,10 @@ int main() {
         agent3.Update(deltaTime);
         agent3.Draw();
 
+        float halfSize = nodeMap->GetCellSize() * 0.5;
+        DrawRectangleV({ agentBaseNode->position.x - halfSize, agentBaseNode->position.y - halfSize},
+            { nodeMap->GetCellSize(), nodeMap->GetCellSize() }, {255, 0, 0, 75});
+
         DrawText("Press S to switch Algorithm", 25, 15, 25, LIME);
         if (agent.GetAlgorithm() == DIJKSTRA) {
             DrawText("Current Algorithm: DIJKSTRA", 400, 15, 25, BLUE);
@@ -125,6 +132,31 @@ int main() {
     delete nodeMap;
     UnloadImage(mapImage);
 
+    delete closerThan5;
+    delete furtherThan7;
+    delete withinRange;
+    delete notWithinRange;
+
     CloseWindow();
     return 0;
+}
+
+std::vector<std::string> GenerateMap(Image image) {
+    std::vector<std::string> map = {};
+
+    for (int y = 0; y < image.height; ++y) {
+        std::string line;
+
+        for (int x = 0; x < image.width; ++x) {
+            if (GetImageColor(image, x, y).r > 127) {
+                line.append("1");
+            } else {
+                line.append("0");
+            }
+        }
+
+        map.push_back(line);
+    }
+
+    return map;
 }

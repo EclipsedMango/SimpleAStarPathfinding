@@ -5,11 +5,21 @@
 #include <algorithm>
 #include <raylib.h>
 #include <unordered_set>
+#include <chrono>
 
 using namespace AIForGames;
 
 NodeMap::~NodeMap() {
-    delete m_nodes;
+    for (int y = 0; y < m_height; y++) {
+        for (int x = 0; x < m_width; x++) {
+            if (m_nodes[x + m_width * y] == nullptr) {
+                continue;
+            }
+            delete m_nodes[x + m_width * y];
+        }
+    }
+
+    delete[] m_nodes;
 }
 
 void NodeMap::Initialise(std::vector<std::string>& asciiMap, const int cellSize) {
