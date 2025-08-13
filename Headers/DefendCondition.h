@@ -9,8 +9,8 @@
 
 class DefendCondition final : public Condition {
 public:
-	DefendCondition(glm::vec2 l, float d, bool lt) : m_location(l), m_distance(d), m_lessThan(lt) {}
-	virtual bool IsTrue(Agent* agent);
+	DefendCondition(const glm::vec2 l, const float d, const bool lt) : m_location(l), m_distance(d), m_lessThan(lt) {}
+	bool IsTrue(Agent* agent) override;
 private:
 	glm::vec2 m_location = {};
 	float m_distance = 0;

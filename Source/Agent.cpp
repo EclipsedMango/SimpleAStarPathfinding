@@ -20,6 +20,10 @@ void Agent::SetNode(AIForGames::Node *node){
     m_pathAgent.SetNode(node);
 }
 
+void Agent::SetBaseNode(AIForGames::Node *node) {
+    m_baseNode = node;
+}
+
 void Agent::SetNodeMap(NodeMap* _nodeMap) {
     m_nodeMap = _nodeMap;
 }
@@ -79,6 +83,10 @@ bool Agent::PathComplete() const {
 
 NodeMap *Agent::GetNodeMap() const {
     return m_nodeMap;
+}
+
+AIForGames::Node* Agent::GetBaseNode() const {
+    return m_baseNode;
 }
 
 void Agent::Draw() const {

@@ -14,6 +14,7 @@
 #include "Headers/DefendCondition.h"
 #include "Headers/StateMachine.h"
 #include "Headers/State.h"
+#include "Headers/UtilityAI.h"
 
 using namespace AIForGames;
 
@@ -39,41 +40,52 @@ int main() {
 
     std::vector<Node*> path = NodeMap::AStarSearch(start, end);
 
+    // Regular Agent
     Agent agent(nodeMap, new GotoPointBehaviour());
     agent.SetNode(start);
     agent.SetLineColour(Color(24, 204, 240, 255));
 
+    // Regular Agent
     Agent agent2(nodeMap, new WanderBehaviour());
     agent2.SetNode(nodeMap->GetRandomNode());
     agent2.SetLineColour(Color(240, 157, 24, 255));
 
+    // FSM (Finite State Machine Agent)
     Node* agentBaseNode = nodeMap->GetRandomNode();
 
-    DistanceCondition* closerThan5 = new DistanceCondition(5.0f * nodeMap->GetCellSize(), true);
-    DistanceCondition* furtherThan7 = new DistanceCondition(7.0f * nodeMap->GetCellSize(), false);
+    // auto* closerThan5 = new DistanceCondition(5.0f * nodeMap->GetCellSize(), true);
+    // auto* furtherThan7 = new DistanceCondition(7.0f * nodeMap->GetCellSize(), false);
+    //
+    // auto* withinRange = new DefendCondition(agentBaseNode->position, 5 * nodeMap->GetCellSize(), true);
+    // auto* notWithinRange = new DefendCondition(agentBaseNode->position, 5 * nodeMap->GetCellSize(), false);
+    //
+    // auto* wanderState = new State(new WanderBehaviour());
+    // auto* followState = new State(new FollowBehaviour());
+    // auto* defendState = new State(new DefendBehaviour());
+    //
+    // wanderState->AddTransition(closerThan5, followState);
+    // wanderState->AddTransition(withinRange, defendState);
+    //
+    // followState->AddTransition(furtherThan7, wanderState);
+    // followState->AddTransition(withinRange, defendState);
+    //
+    // defendState->AddTransition(notWithinRange, wanderState);
 
-    DefendCondition* withinRange = new DefendCondition(agentBaseNode->position, 5 * nodeMap->GetCellSize(), true);
-    DefendCondition* notWithinRange = new DefendCondition(agentBaseNode->position, 5 * nodeMap->GetCellSize(), false);
+    // auto* sm = new StateMachine(wanderState);
+    // sm->AddState(wanderState);
+    // sm->AddState(followState);
+    // sm->AddState(defendState);
 
-    State* wanderState = new State(new WanderBehaviour());
-    State* followState = new State(new FollowBehaviour());
-    State* defendState = new State(new DefendBehaviour());
+    // Non-FSM (Finite State Machine) behaviours
+    auto* utilityAI = new UtilityAI();
+    utilityAI->SetStartBehaviour(new WanderBehaviour());
+    utilityAI->AddBehaviour(new WanderBehaviour());
+    utilityAI->AddBehaviour(new FollowBehaviour());
+    utilityAI->AddBehaviour(new DefendBehaviour());
 
-    wanderState->AddTransition(closerThan5, followState);
-    wanderState->AddTransition(withinRange, defendState);
-
-    followState->AddTransition(furtherThan7, wanderState);
-    followState->AddTransition(withinRange, defendState);
-
-    defendState->AddTransition(notWithinRange, wanderState);
-
-    StateMachine* sm = new StateMachine(wanderState);
-    sm->AddState(wanderState);
-    sm->AddState(followState);
-    sm->AddState(defendState);
-
-    Agent agent3(nodeMap, sm);
+    Agent agent3(nodeMap, utilityAI);
     agent3.SetNode(nodeMap->GetRandomNode());
+    agent3.SetBaseNode(agentBaseNode);
     agent3.SetTarget(&agent);
     agent3.SetSpeed(128 * 2.5);
     agent3.SetLineColour(Color(24, 240, 49, 255));
@@ -126,16 +138,18 @@ int main() {
             DrawText("Current Algorithm: ASTAR", 400, 15, 25, BLUE);
         }
 
+        // DrawText(TextFormat("&.2f", ))
+
         EndDrawing();
     }
 
     delete nodeMap;
     UnloadImage(mapImage);
 
-    delete closerThan5;
-    delete furtherThan7;
-    delete withinRange;
-    delete notWithinRange;
+    // delete closerThan5;
+    // delete furtherThan7;
+    // delete withinRange;
+    // delete notWithinRange;
 
     CloseWindow();
     return 0;

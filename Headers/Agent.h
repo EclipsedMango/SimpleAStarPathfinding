@@ -23,6 +23,7 @@ public:
     void SetPosition(glm::vec2 pos);
     void SetColour(Color colour);
     void SetLineColour(Color colour);
+    void SetBaseNode(AIForGames::Node* node);
     void SetNode(AIForGames::Node* node);
     void SetNodeMap(NodeMap* _nodeMap);
 
@@ -31,17 +32,19 @@ public:
     [[nodiscard]] int GetCurrentIndex() const;
     [[nodiscard]] AIForGames::Algorithm GetAlgorithm() const;
     [[nodiscard]] bool PathComplete() const;
+    [[nodiscard]] AIForGames::Node* GetBaseNode() const;
     [[nodiscard]] NodeMap* GetNodeMap() const;
 
     void Update(float deltaTime);
     void Draw() const;
 
 private:
-    static void DrawPath(const PathAgent& agent, const Color lineCol);
+    static void DrawPath(const PathAgent& agent, Color lineCol);
 
     Agent* m_target = {};
     PathAgent m_pathAgent = {};
     Behaviour* m_current = {};
+    AIForGames::Node* m_baseNode = {};
     NodeMap* m_nodeMap = {};
     Color m_color = {};
     Color m_lineColour = {};

@@ -12,7 +12,7 @@ void FollowBehaviour::Exit(Agent* agent) {
 }
 
 void FollowBehaviour::Update(Agent* agent, float deltaTime) {
-	Agent* target = agent->GetTarget();
+	const Agent* target = agent->GetTarget();
 
 	float dist = glm::distance(target->GetPosition(), lastTargetPosition);
 	if (dist > agent->GetNodeMap()->GetCellSize()) {
@@ -20,3 +20,16 @@ void FollowBehaviour::Update(Agent* agent, float deltaTime) {
 		agent->GoTo(lastTargetPosition);
 	}
 }
+
+float FollowBehaviour::Evaluate(Agent *agent) {
+	const Agent* target = agent->GetTarget();
+	const float dist = glm::distance(target->GetPosition(), agent->GetPosition());
+
+	float eval = 10 * agent->GetNodeMap()->GetCellSize() - dist;
+	if (eval < 0) {
+		eval = 0;
+	}
+
+	return eval;
+}
+

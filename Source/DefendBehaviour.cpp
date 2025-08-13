@@ -22,3 +22,25 @@ void DefendBehaviour::Update(Agent* agent, float deltaTime) {
 		agent->GoTo(lastTargetPosition);
 	}
 }
+
+float DefendBehaviour::Evaluate(Agent *agent) {
+	const Agent* target = agent->GetTarget();
+
+	if (agent->GetBaseNode() == nullptr) {
+		return 0;
+	}
+
+	const float dist = glm::distance(target->GetPosition(), agent->GetBaseNode()->position);
+
+	if (dist > 5 * agent->GetNodeMap()->GetCellSize()) {
+		return 0;
+	}
+
+	float eval = 30 * agent->GetNodeMap()->GetCellSize() - dist;
+	if (eval < 0) {
+		eval = 0;
+	}
+
+	return eval;
+}
+

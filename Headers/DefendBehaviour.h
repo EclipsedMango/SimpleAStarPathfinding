@@ -11,6 +11,8 @@ public:
     void Enter(Agent* agent) override;
     void Update(Agent* agent, float deltaTime) override;
     void Exit(Agent* agent) override;
+
+    float Evaluate(Agent *agent) override;
 private:
     glm::vec2 lastTargetPosition = {};
 };
